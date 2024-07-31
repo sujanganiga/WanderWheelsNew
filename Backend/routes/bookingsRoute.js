@@ -23,7 +23,7 @@ router.get("/getuserbookings", async (req, res) => {
 });
 
 router.post("/bookcar", async (req, res) => {
-  const { token } = req.body;
+  const { token, description } = req.body;
   try {
     const customer = await stripe.customers.create({
       email: token.email,
@@ -36,6 +36,7 @@ router.post("/bookcar", async (req, res) => {
         currency: "inr",
         customer: customer.id,
         receipt_email: token.email,
+        description: description, // Add description here
       },
       {
         idempotencyKey: uuidv4(),
@@ -51,7 +52,7 @@ router.post("/bookcar", async (req, res) => {
       car.bookedTimeSlots.push(req.body.bookedTimeSlots);
 
       await car.save();
-      res.send("Your booking is successfull");
+      res.send("Your booking is successful");
     } else {
       return res.status(400).json(error);
     }
